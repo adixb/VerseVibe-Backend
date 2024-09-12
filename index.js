@@ -14,5 +14,5 @@ app.use(cors({
 })) ; 
 app.use(express.urlencoded({extended:true})) ; 
 
-app.listen(PORT_NUMBER,()=>{console.log(`Server is running on ${PORT_NUMBER}`)}) ;
+app.listen(PORT_NUMBER,()=>{console.log(`Server is running on ${PORT_NUMBER}`)}) 
 
