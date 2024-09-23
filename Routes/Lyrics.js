@@ -1,29 +1,10 @@
-const express = require('express') ;
-const {handleGetLyrics} = require('../Controllers/Lyrics')
+const express = require('express');
+const { handleGetLyrics } = require('../Controllers/Lyrics'); // Make sure this path is correct
 
+const router = express.Router(); 
 
-
-
-
-const router = express.Router() ; 
-//GET 
-
-
-
-
-// POST
-
+// POST - Handle Lyrics Generation
 router.post('/getLyrics', handleGetLyrics);
 
-
-
-
-
-//PUT 
-
-
-
-
-//DELETE
-
-module.exports=router ; 
+// Export the router to use in your server
+module.exports = router;

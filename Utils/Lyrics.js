@@ -1,50 +1,50 @@
 const axios = require('axios');
-const cheerio = require('cheerio');
-const dotenv = require('dotenv');
 
-dotenv.config();
+// Helper function to clean song titles
+function cleanSongTitle(songTitle) {
+    if (!songTitle) {
+        console.error('Song title is undefined or empty!');
+        return ''; // Return an empty string if the title is undefined or empty
+    }
 
-const GENIUS_ACCESS_TOKEN = process.env.GENIUS_ACCESS_TOKEN; // Ensure this matches your .env variable name
+    return songTitle
+        .replace(/[\–|\|()]+/g, '')  // Remove pipes, em dashes, parentheses
+        .replace(/official video/gi, '')  // Remove "Official Video"
+        .replace(/official audio/gi, '')  // Remove "Official Audio"
+        .replace(/lyric video/gi, '')    // Remove "Lyric Video"
+        .replace(/EP/gi, '')             // Remove "EP"
+        .trim();                         // Trim leading and trailing spaces
+}
 
-// Function to search for lyrics and scrape the lyrics text using the Genius API
-async function getLyrics(songTitle) {
+// Function to search for lyrics using the Lyrics.ovh API
+async function getLyrics(artist, songTitle) {
     try {
-        // Search for the song on Genius using their API
-        const searchResponse = await axios.get(`https://api.genius.com/search?q=${encodeURIComponent(songTitle)}`, {
-            headers: {
-                Authorization: `Bearer ${GENIUS_ACCESS_TOKEN}`,
-            },
-        });
+        // Clean the song title
+        const cleanedTitle = cleanSongTitle(songTitle);
+        console.log(`Searching lyrics for: ${cleanedTitle} by ${artist}`);
 
-        const hits = searchResponse.data.response.hits;
-        if (hits.length > 0) {
-            const lyricsUrl = hits[0].result.url; // URL of the lyrics page on Genius
+        // Search for the lyrics using the Lyrics.ovh API
+        const response = await axios.get(`https://api.lyrics.ovh/v1/${encodeURIComponent(artist)}/${encodeURIComponent(cleanedTitle)}`);
 
-            // Fetch the lyrics page HTML
-            const lyricsPage = await axios.get(lyricsUrl);
+        // Check if lyrics are returned
+        const lyrics = response.data.lyrics;
 
-            // Load the HTML into cheerio for parsing
-            const $ = cheerio.load(lyricsPage.data);
-
-            // Extract the lyrics text from multiple containers
-            let lyrics = '';
-            $('[data-lyrics-container]').each((i, el) => {
-                lyrics += $(el).text().trim() + '\n\n'; // Adding line breaks between sections
-            });
-
-            // If no lyrics are found, return a default message
-            if (!lyrics) {
-                lyrics = 'Lyrics not found on the page';
-            }
-
-            // Return the cleaned lyrics
+        // Return the lyrics if found, or a message indicating no lyrics were found
+        if (lyrics && lyrics.trim()) {
             return lyrics.trim();
         } else {
-            throw new Error('Lyrics not found in Genius search results');
+            return 'No lyrics found for the given song title.';
         }
     } catch (err) {
+        // Log error details for better troubleshooting
         console.error('Error fetching lyrics:', err.message);
-        return null;
+
+        // Provide more user-friendly error messages
+        if (err.response && err.response.status === 404) {
+            return 'No lyrics found for the given artist and song title.';
+        } else {
+            return 'Failed to fetch lyrics due to an error with the service.';
+        }
     }
 }
 

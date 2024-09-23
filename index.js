@@ -1,29 +1,29 @@
-const express = require('express') ; 
-const cors = require('cors')
-const dotenv = require('dotenv') 
-const LyricsRouter = require('../Server/Routes/Lyrics')
+const express = require('express'); 
+const cors = require('cors');
+const dotenv = require('dotenv');
+const LyricsRouter = require('./Routes/Lyrics'); // Ensure path is correct
 
-dotenv.config() ; 
+dotenv.config(); 
 
-//Declarations 
-const app = express() ; 
-const PORT_NUMBER = process.env.PORT || 8000
+// Declarations
+const app = express(); 
+const PORT_NUMBER = process.env.PORT || 8000;
 
-//Middlewares
+// Middlewares
 app.use(cors({
     origin: 'http://localhost:3000', 
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true, 
-  }));
-app.use(express.urlencoded({extended:true})) ; 
-app.use(express.json()) ; 
+}));
+app.use(express.urlencoded({ extended: true })); 
+app.use(express.json()); 
 
-
-//api endpoints 
-app.use('/api/lyrics',LyricsRouter);
-
+// API Endpoints
+app.use('/api/lyrics', LyricsRouter);
 
 
 
-app.listen(PORT_NUMBER,()=>{console.log(`Server is running on ${PORT_NUMBER}`)}) 
-
+// Start server
+app.listen(PORT_NUMBER, () => {
+    console.log(`Server is running on ${PORT_NUMBER}`);
+});
