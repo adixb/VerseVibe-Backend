@@ -12,7 +12,8 @@ function cleanSongTitle(songTitle) {
         .replace(/official video/gi, '')  // Remove "Official Video"
         .replace(/official audio/gi, '')  // Remove "Official Audio"
         .replace(/lyric video/gi, '')    // Remove "Lyric Video"
-        .replace(/EP/gi, '')             // Remove "EP"
+        .replace(/EP/gi, '')// Remove "EP"
+        .replace(/by/gi,'-')             
         .trim();                         // Trim leading and trailing spaces
 }
 
@@ -24,7 +25,9 @@ async function getLyrics(artist, songTitle) {
         console.log(`Searching lyrics for: ${cleanedTitle} by ${artist}`);
 
         // Search for the lyrics using the Lyrics.ovh API
-        const response = await axios.get(`https://api.lyrics.ovh/v1/${encodeURIComponent(artist)}/${encodeURIComponent(cleanedTitle)}`);
+        const response = await axios.get(`https://api.lyrics.ovh/v1/${encodeURIComponent(artist)}/${encodeURIComponent(cleanedTitle)}`,{
+            timeout:10000
+        });
 
         // Check if lyrics are returned
         const lyrics = response.data.lyrics;
