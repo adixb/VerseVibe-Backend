@@ -1,5 +1,5 @@
 const ytdl = require('ytdl-core');
-const { getLyrics } = require('../Utils/Lyrics'); // Ensure path is correct
+const { getLyrics,cleanSongTitle } = require('../Utils/Lyrics'); // Ensure path is correct
 
 async function handleGetLyrics(req, res) {
     const { link } = req.body;
@@ -22,7 +22,19 @@ async function handleGetLyrics(req, res) {
         console.log(`Fetched Video Title: ${videoTitle}`); // Optional: Log for debugging
 
         // Separate the artist and song title based on the format "Artist - Song Title"
-        const [artist, songTitle] = videoTitle.split(' - ');
+        let artist, songTitle;
+
+        // If title contains a hyphen, assume the format is "Artist - Song"
+        if (videoTitle.includes(' - ')) {
+            [artist, songTitle] = videoTitle.split(' - ');
+        } else {
+            // If no hyphen is found, try other parsing methods (e.g., common separators or cleaning further)
+            artist = videoInfo.videoDetails.author.name; // Use the channel name as artist fallback
+            songTitle = videoTitle;
+        }
+
+        // Clean the extracted song title
+        songTitle = cleanSongTitle(songTitle);
 
         // Make sure both artist and songTitle are extracted correctly
         if (!artist || !songTitle) {
