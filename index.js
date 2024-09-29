@@ -11,7 +11,7 @@ const PORT_NUMBER = process.env.PORT || 8000;
 
 // Middlewares
 app.use(cors({
-    origin: 'https://verse-vibe-smoky.vercel.app', 
+    origin: 'https://verse-vibe-smoky.vercel.app/', 
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true, 
 }));
