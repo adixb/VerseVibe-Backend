@@ -1,7 +1,10 @@
 const express = require('express');
-const { handleGetLyrics } = require('../Controllers/Lyrics'); // Make sure this path is correct
+const { handleGetLyrics,handleRoot } = require('../Controllers/Lyrics'); // Make sure this path is correct
 
 const router = express.Router(); 
+
+
+router.get('/',handleRoot)
 
 // POST - Handle Lyrics Generation
 router.post('/getLyrics', handleGetLyrics);

@@ -1,6 +1,12 @@
 const ytdl = require('ytdl-core');
 const { getLyrics,cleanSongTitle } = require('../Utils/Lyrics'); // Ensure path is correct
 
+
+
+async function handleRoot(req,res){
+    return res.status(200).send("Server is running ")
+}
+
 async function handleGetLyrics(req, res) {
     const { link } = req.body;
 
@@ -58,4 +64,5 @@ async function handleGetLyrics(req, res) {
 
 module.exports = {
     handleGetLyrics,
+    handleRoot
 };
