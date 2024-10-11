@@ -22,7 +22,8 @@ async function handleGetLyrics(req, res) {
 
         // Ensure videoTitle is valid before fetching lyrics
         if (!videoTitle) {
-            return res.status(400).json({ error: 'Unable to extract video title' });
+            // return res.status(400).json({ error: 'Unable to extract video title' });
+            return res.status(400).json({error:"Unable to extract video title..."})
         }
 
         console.log(`Fetched Video Title: ${videoTitle}`); // Optional: Log for debugging
